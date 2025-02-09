@@ -13,7 +13,9 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.cowsay ];
+          packages = [
+            pkgs.bun
+          ];
         };
       }
     );
