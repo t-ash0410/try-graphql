@@ -14,6 +14,9 @@
       {
         devShells.default = pkgs.mkShell {
           packages = [ pkgs.cowsay ];
+          shellHook = ''
+            $SHELL
+          '';
         };
       }
     );
