@@ -1,0 +1,18 @@
+{
+  "name": "@try-graphql/backend",
+  "scripts": {
+    "dev": "bun run --hot src/app.ts",
+    "check": "biome check",
+    "check:write": "biome check --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "hono": "^4.7.0"
+  }
+}
