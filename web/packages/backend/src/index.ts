@@ -5,90 +5,12 @@ import {
   TLS_KEY_PATH,
   USE_HTTPS,
 } from '@backend/env'
-import { useErrorHandler } from '@envelop/core'
-import { type PylonConfig, ServiceError, app } from '@getcronit/pylon'
-import { randomUUIDv7 } from 'bun'
+import { health } from '@backend/graphql/health'
+import { createTicket, ticket, tickets } from '@backend/graphql/ticket'
+import { errorHandler } from '@backend/plugins/error-handler'
+import { type PylonConfig, app } from '@getcronit/pylon'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
-import { z } from 'zod'
-
-const ticketSchema = z.object({
-  ticketId: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  title: z.string(),
-  description: z.string().optional(),
-  deadline: z.date().optional(),
-})
-type Ticket = z.infer<typeof ticketSchema>
-
-const store: {
-  tickets: Ticket[]
-} = {
-  tickets: [
-    {
-      ticketId: 'xxxx-001',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      title: 'Some Ticket 1',
-      description: 'Some ticket description here.',
-      deadline: new Date(),
-    },
-    {
-      ticketId: 'xxxx-002',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      title: 'Some Ticket 2',
-    },
-  ],
-}
-
-export const graphql = {
-  Query: {
-    hello: () => {
-      return 'Hello, world!'
-    },
-    tickets: async () => {
-      return store.tickets
-    },
-    ticket: async (id: string) => {
-      const ret = store.tickets.find((t) => t.ticketId === id)
-      if (!ret) {
-        throw new ServiceError('not found', {
-          code: 'NOT_FOUND',
-          statusCode: 404,
-        })
-      }
-      return ret
-    },
-  },
-  Mutation: {
-    createTicket: async (
-      title: string,
-      description?: string,
-      deadline?: Date,
-    ) => {
-      const newTicket = {
-        ticketId: randomUUIDv7(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        title,
-        description,
-        deadline,
-      }
-      store.tickets.push(newTicket)
-      return newTicket
-    },
-  },
-}
-
-export const config: PylonConfig = {
-  plugins: [
-    useErrorHandler(({ errors }) => {
-      console.error(errors)
-    }),
-  ],
-}
 
 app.use(
   cors({
@@ -98,7 +20,21 @@ app.use(
   secureHeaders(),
 )
 
-// Run
+const graphql = {
+  Query: {
+    health,
+    tickets,
+    ticket,
+  },
+  Mutation: {
+    createTicket,
+  },
+}
+
+const config: PylonConfig = {
+  plugins: [errorHandler],
+}
+
 export default {
   fetch: app.fetch,
   port: BFF_PORT,
@@ -110,3 +46,5 @@ export default {
       }
     : undefined,
 }
+
+export { graphql, config }
