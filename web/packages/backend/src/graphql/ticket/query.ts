@@ -1,13 +1,12 @@
 import { db } from '@backend/lib/db'
 import { ServiceError } from '@getcronit/pylon'
 
-const tickets = () => {
-  const tickets = db.ticket.findMany()
-  return tickets
+const tickets = async () => {
+  return await db.ticket.findMany()
 }
 
-const ticket = (id: number) => {
-  const ret = db.ticket.findFirst({
+const ticket = async (id: number) => {
+  const ret = await db.ticket.findFirst({
     where: {
       ticketId: id,
     },
