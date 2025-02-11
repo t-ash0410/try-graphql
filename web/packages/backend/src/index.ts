@@ -5,10 +5,10 @@ import {
   TLS_KEY_PATH,
   USE_HTTPS,
 } from '@backend/env'
-import { app } from '@getcronit/pylon'
+import { useErrorHandler } from '@envelop/core'
+import { type PylonConfig, ServiceError, app } from '@getcronit/pylon'
 import { randomUUIDv7 } from 'bun'
 import { cors } from 'hono/cors'
-import { HTTPException } from 'hono/http-exception'
 import { secureHeaders } from 'hono/secure-headers'
 import { z } from 'zod'
 
@@ -54,7 +54,10 @@ export const graphql = {
     ticket: async (id: string) => {
       const ret = store.tickets.find((t) => t.ticketId === id)
       if (!ret) {
-        throw new HTTPException(404, { message: 'not found' })
+        throw new ServiceError('not found', {
+          code: 'NOT_FOUND',
+          statusCode: 404,
+        })
       }
       return ret
     },
@@ -77,6 +80,14 @@ export const graphql = {
       return newTicket
     },
   },
+}
+
+export const config: PylonConfig = {
+  plugins: [
+    useErrorHandler(({ errors }) => {
+      console.error(errors)
+    }),
+  ],
 }
 
 app.use(
