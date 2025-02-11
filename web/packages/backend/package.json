@@ -22,8 +22,10 @@
   "dependencies": {
     "@envelop/core": "^5.0.3",
     "@getcronit/pylon": "^2.9.4",
+    "@hono/zod-validator": "^0.4.2",
     "@prisma/client": "^6.3.1",
     "hono": "^4.7.0",
+    "neverthrow": "^8.1.1",
     "zod": "^3.24.1"
   }
 }
