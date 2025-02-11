@@ -1,3 +1,4 @@
+import { createUser, user, users } from '@backend//graphql/user'
 import {
   BFF_PORT,
   CORS_ORIGIN,
@@ -25,9 +26,12 @@ const graphql = {
     health,
     tickets,
     ticket,
+    users,
+    user,
   },
   Mutation: {
     createTicket,
+    createUser,
   },
 }
 
