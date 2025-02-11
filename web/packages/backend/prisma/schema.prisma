@@ -14,10 +14,12 @@ datasource db {
 }
 
 model User {
-  userId  Int      @id @default(autoincrement()) @map("user_id")
-  email   String   @unique
-  name    String?
-  tickets Ticket[]
+  userId      Int      @id @default(autoincrement()) @map("user_id")
+  email       String   @unique
+  name        String?
+  slackUserId String?  @map("slack_user_id")
+  slackTeamId String?  @map("slack_team_id")
+  tickets     Ticket[]
 
   @@map("users")
 }

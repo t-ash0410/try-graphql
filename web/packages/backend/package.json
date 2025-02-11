@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "pylon dev -c 'bun run .pylon/index.js'",
     "build": "pylon build",
-    "generate": "prisma generate",
-    "migrate": "prisma migrate dev --name $1",
+    "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "check": "biome check",
     "check:write": "biome check --write"
