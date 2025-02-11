@@ -1,18 +1,18 @@
-import { randomUUIDv7 } from 'bun'
-import { ticketSchema } from './schema'
-import { store } from './store'
+import { db } from '@backend/lib/db'
 
-const createTicket = (title: string, description?: string, deadline?: Date) => {
-  const newTicket = ticketSchema.parse({
-    ticketId: randomUUIDv7(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    title,
-    description,
-    deadline,
+const createTicket = async (
+  title: string,
+  description?: string,
+  deadline?: Date,
+) => {
+  return await db.ticket.create({
+    data: {
+      title,
+      description,
+      deadline,
+      authorId: 1,
+    },
   })
-  store.tickets.push(newTicket)
-  return newTicket
 }
 
 export { createTicket }
