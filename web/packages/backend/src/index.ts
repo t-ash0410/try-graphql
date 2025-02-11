@@ -5,66 +5,12 @@ import {
   TLS_KEY_PATH,
   USE_HTTPS,
 } from '@backend/env'
-import { app } from '@getcronit/pylon'
+import { health } from '@backend/graphql/health'
+import { createTicket, ticket, tickets } from '@backend/graphql/ticket'
+import { errorHandler } from '@backend/plugins/error-handler'
+import { type PylonConfig, app } from '@getcronit/pylon'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
-import { z } from 'zod'
-
-const ticketSchema = z.object({
-  ticketId: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  title: z.string(),
-  description: z.string().optional(),
-  deadline: z.date().optional(),
-})
-type Ticket = z.infer<typeof ticketSchema>
-
-export const graphql = {
-  Query: {
-    hello: () => {
-      return 'Hello, world!'
-    },
-    tickets: async (): Promise<Ticket[]> => [
-      {
-        ticketId: 'xxxx-001',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        title: 'Some Ticket 1',
-        description: 'Some ticket description here.',
-        deadline: new Date(),
-      },
-      {
-        ticketId: 'xxxx-002',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        title: 'Some Ticket 2',
-      },
-    ],
-    ticket: async (id: string): Promise<Ticket> => ({
-      ticketId: 'xxxx',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      title: 'Some Ticket',
-      description: 'Some ticket description here.',
-      deadline: new Date(),
-    }),
-  },
-  Mutation: {
-    createTicket: async (
-      title: string,
-      description?: string,
-      deadline?: Date,
-    ): Promise<Ticket> => ({
-      ticketId: 'xxxx',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      title,
-      description,
-      deadline,
-    }),
-  },
-}
 
 app.use(
   cors({
@@ -74,7 +20,21 @@ app.use(
   secureHeaders(),
 )
 
-// Run
+const graphql = {
+  Query: {
+    health,
+    tickets,
+    ticket,
+  },
+  Mutation: {
+    createTicket,
+  },
+}
+
+const config: PylonConfig = {
+  plugins: [errorHandler],
+}
+
 export default {
   fetch: app.fetch,
   port: BFF_PORT,
@@ -86,3 +46,5 @@ export default {
       }
     : undefined,
 }
+
+export { graphql, config }
