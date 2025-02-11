@@ -15,6 +15,7 @@
       "name": "@try-graphql/backend",
       "dependencies": {
         "@getcronit/pylon": "^2.9.4",
+        "hono": "^4.7.0",
         "zod": "^3.24.1",
       },
       "devDependencies": {
