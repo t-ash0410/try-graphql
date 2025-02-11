@@ -5,7 +5,7 @@ import { sign, verify } from 'hono/jwt'
 import { ResultAsync, errAsync } from 'neverthrow'
 
 const createJWT = async (params: {
-  userId: string
+  userId: number
   now: Date
 }) => {
   const iat = Math.floor(params.now.getTime() / 1000)

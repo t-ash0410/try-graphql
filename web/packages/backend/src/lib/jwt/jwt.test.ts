@@ -6,12 +6,12 @@ import { createJWT, setJWTCookie, verifyJWTCookie } from './jwt'
 describe('createJWT', async () => {
   it('returns jwt', async () => {
     const res = await createJWT({
-      userId: 'user-001',
+      userId: 1,
       now: new Date('2020-01-01T00:00:00.000Z'),
     })
 
-    expect(res).toBe(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTAwMSIsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.1xemy5NAn5H2OlW9Eiuqipu3aIqW2XSKj6Kf3PnP4TU',
+    expect(res).toMatchInlineSnapshot(
+      `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.py11kQ-hwg944MFK5Itkcv9WqI_ID3KBwoGXigXwa-8"`,
     )
   })
 })
@@ -48,7 +48,7 @@ describe('verifyJWTCookie', async () => {
 
     const now = new Date()
     const jwt = await createJWT({
-      userId: 'user-001',
+      userId: 1,
       now: now,
     })
     const res = await app.request('/', {
@@ -59,7 +59,7 @@ describe('verifyJWTCookie', async () => {
 
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({
-      sub: 'user-001',
+      sub: 1,
       iat: Math.floor(now.getTime() / 1000),
       exp: Math.floor(now.getTime() / 1000) + 3 * 60 * 60,
     })
