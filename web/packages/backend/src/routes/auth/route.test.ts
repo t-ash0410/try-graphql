@@ -15,6 +15,8 @@ import {
   SLACK_CLIENT_SECRET,
   SLACK_SSO_REDIRECT_URL,
 } from '@backend/env'
+import { dummyUser } from '@backend/fixtures'
+import { db } from '@backend/lib/db'
 import { createJWT } from '@backend/lib/jwt'
 import {
   type JWTVerifyResult,
@@ -88,7 +90,7 @@ describe('GET /oidc/slack', async () => {
               type: 'some-key-type',
             },
             payload: {
-              email: 'john-doe@stack-example.tash0410.com',
+              email: 'john-doe@example.com',
               name: 'John Doe',
               sub: 'UXXXXXXX',
               'https://slack.com/team_id': 'TXXXXXXX',
@@ -112,6 +114,16 @@ describe('GET /oidc/slack', async () => {
         }),
       ),
     )
+    mock.module('@backend/lib/db', () => {
+      return {
+        db: {
+          user: {
+            findFirst: mock(() => dummyUser),
+            create: mock(() => dummyUser),
+          },
+        },
+      }
+    })
   })
 
   afterEach(() => {
@@ -120,7 +132,7 @@ describe('GET /oidc/slack', async () => {
     mock.restore()
   })
 
-  it('returns ok', async () => {
+  it('returns jwt based on the found user', async () => {
     const url = new URL('http://localhost/oidc/slack')
     url.searchParams.append('code', 'some-code')
     url.searchParams.append('state', 'some-state')
@@ -133,7 +145,7 @@ describe('GET /oidc/slack', async () => {
     })
 
     const jwt = await createJWT({
-      userId: 1,
+      userId: dummyUser.userId,
       now,
     })
 
@@ -141,6 +153,7 @@ describe('GET /oidc/slack', async () => {
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.py11kQ-hwg944MFK5Itkcv9WqI_ID3KBwoGXigXwa-8",
+        "slackTeamId": "TXXXXX",
       }
     `)
     expect(res.headers.get('set-cookie')).toBe(
@@ -159,6 +172,86 @@ describe('GET /oidc/slack', async () => {
         code: 'some-code',
         redirect_uri: SLACK_SSO_REDIRECT_URL,
       }),
+    })
+
+    expect(db.user.findFirst).toHaveBeenCalledTimes(1)
+    expect(db.user.findFirst).toHaveBeenNthCalledWith(1, {
+      where: {
+        email: 'john-doe@example.com',
+      },
+    })
+
+    expect(db.user.create).not.toHaveBeenCalled()
+  })
+
+  it('returns jwt based on the new user', async () => {
+    mock.module('@backend/lib/db', () => {
+      return {
+        db: {
+          user: {
+            findFirst: mock(() => null), // important
+            create: mock(() => dummyUser),
+          },
+        },
+      }
+    })
+
+    const url = new URL('http://localhost/oidc/slack')
+    url.searchParams.append('code', 'some-code')
+    url.searchParams.append('state', 'some-state')
+
+    const res = await authRoute.request(url, {
+      method: 'GET',
+      headers: {
+        cookie: 'state=some-state; nonce=some-nonce',
+      },
+    })
+
+    const jwt = await createJWT({
+      userId: dummyUser.userId,
+      now,
+    })
+
+    expect(res.status).toBe(200)
+    expect(await res.json()).toMatchInlineSnapshot(`
+      {
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.py11kQ-hwg944MFK5Itkcv9WqI_ID3KBwoGXigXwa-8",
+        "slackTeamId": "TXXXXX",
+      }
+    `)
+    expect(res.headers.get('set-cookie')).toBe(
+      `${deleteCookie}, ${JWT_KEY}=${jwt}; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict`,
+    )
+
+    expect(global.fetch).toHaveBeenCalledTimes(1)
+    expect(global.fetch).toHaveBeenNthCalledWith(1, SLACK_SSO_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: SLACK_CLIENT_ID,
+        client_secret: SLACK_CLIENT_SECRET,
+        code: 'some-code',
+        redirect_uri: SLACK_SSO_REDIRECT_URL,
+      }),
+    })
+
+    expect(db.user.findFirst).toHaveBeenCalledTimes(1)
+    expect(db.user.findFirst).toHaveBeenNthCalledWith(1, {
+      where: {
+        email: 'john-doe@example.com',
+      },
+    })
+
+    expect(db.user.create).toHaveBeenCalledTimes(1)
+    expect(db.user.create).toHaveBeenNthCalledWith(1, {
+      data: {
+        email: 'john-doe@example.com',
+        name: 'John Doe',
+        slackUserId: 'UXXXXXXX',
+        slackTeamId: 'TXXXXXXX',
+      },
     })
   })
 

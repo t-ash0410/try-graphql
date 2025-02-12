@@ -4,12 +4,13 @@ import {
   SLACK_CLIENT_SECRET,
   SLACK_SSO_REDIRECT_URL,
 } from '@backend/env'
+import { db } from '@backend/lib/db'
 import { createJWT, setJWTCookie } from '@backend/lib/jwt'
 import { zValidator } from '@hono/zod-validator'
 import type { Context } from 'hono'
 import { deleteCookie, getCookie } from 'hono/cookie'
 import type { CookieOptions } from 'hono/utils/cookie'
-import { createRemoteJWKSet, jwtVerify } from 'jose'
+import { type JWTPayload, createRemoteJWKSet, jwtVerify } from 'jose'
 import { Result, ResultAsync, err, ok } from 'neverthrow'
 import { z } from 'zod'
 import { authFactory } from './app'
@@ -37,15 +38,14 @@ const handlers = authFactory.createHandlers(validator, async (c) => {
     .asyncAndThen(() => getSlackJWT(code))
     .andThen(convertTokenResponse)
     .andThen((res) => verifyAndDecode(c, res.idToken))
-  // .andThen((res) => callAccountMgr(accountMgr, res.payload))
+    .andThen((res) => getOrCreateUser(res.payload))
   if (res.isErr()) {
     throw res.error
   }
 
   const now = new Date()
   const jwt = await createJWT({
-    // userId: res.value.userId,
-    userId: 1,
+    userId: res.value.userId,
     now,
   })
   setJWTCookie({
@@ -56,7 +56,7 @@ const handlers = authFactory.createHandlers(validator, async (c) => {
 
   return c.json({
     jwt,
-    // slackTeamId: res.value.slackTeamId,
+    slackTeamId: res.value.slackTeamId,
   })
 })
 
@@ -149,24 +149,33 @@ const verifyAndDecode = (c: Context, idToken: string) =>
     return ok(jwt)
   })
 
-// const callAccountMgr = (
-//   accountMgr: AccountMgrServiceClient,
-//   payload: JWTPayload,
-// ) => {
-//   const teamId = payload['https://slack.com/team_id'] as string
-//   return ResultAsync.fromThrowable(() => {
-//     return accountMgr.slackSSO({
-//       email: payload.email as string,
-//       name: payload.name as string,
-//       slackUserId: payload.sub as string,
-//       slackTeamId: teamId,
-//     })
-//   })().andThen((res) => {
-//     return ok({
-//       userId: res.userId,
-//       slackTeamId: teamId,
-//     })
-//   })
-// }
+const getOrCreateUser = (payload: JWTPayload) => {
+  const slackTeamId = payload['https://slack.com/team_id'] as string
+  const slackUserId = payload.sub as string
+  const email = payload.email as string
+  const name = payload.name as string
+
+  return ResultAsync.fromThrowable(() =>
+    db.user.findFirst({
+      where: {
+        email,
+      },
+    }),
+  )().andThen((res) => {
+    if (!res) {
+      return ResultAsync.fromThrowable(() =>
+        db.user.create({
+          data: {
+            email,
+            name,
+            slackUserId,
+            slackTeamId,
+          },
+        }),
+      )()
+    }
+    return ok(res)
+  })
+}
 
 export { handlers as slackHandlers }
