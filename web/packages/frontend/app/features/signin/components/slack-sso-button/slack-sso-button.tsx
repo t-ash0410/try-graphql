@@ -1,4 +1,4 @@
-import { Button } from '@frontend/components'
+import { Button } from '~/components'
 import { useSlackSSOButton } from './use-slack-sso-button'
 
 export function SlackSSOButton() {

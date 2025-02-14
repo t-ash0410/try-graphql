@@ -37,6 +37,7 @@
     "packages/frontend": {
       "name": "@try-graphql/frontend",
       "dependencies": {
+        "@radix-ui/react-slot": "^1.1.2",
         "@react-router/node": "^7.1.5",
         "@react-router/serve": "^7.1.5",
         "@tanstack/react-query": "^5.66.0",
