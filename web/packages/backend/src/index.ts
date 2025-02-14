@@ -6,6 +6,7 @@ import {
   TLS_KEY_PATH,
   USE_HTTPS,
 } from '@backend/lib/env'
+import { authN } from '@backend/middlewares'
 import { errorHandler } from '@backend/plugins'
 import { authRoute, healthRoute } from '@backend/routes'
 import { type PylonConfig, app } from '@getcronit/pylon'
@@ -20,6 +21,7 @@ app
     }),
     secureHeaders(),
   )
+  .use('/graphql', authN)
   .route('/health', healthRoute)
   .route('/auth', authRoute)
 
