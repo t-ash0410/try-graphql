@@ -1,0 +1,36 @@
+name: Frontend - CI
+
+on:
+  pull_request:
+    paths:
+      - web/packages/frontend/**
+      - .github/workflows/frontend-ci.yaml
+  push:
+    branches:
+      - main
+    paths:
+      - web/packages/frontend/**
+      - .github/workflows/frontend-ci.yaml
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ./web/packages/frontend
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out codes
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Lint
+        run: bun check
+      - name: Test
+        run: bun run build
