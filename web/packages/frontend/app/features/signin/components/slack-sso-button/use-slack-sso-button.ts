@@ -26,7 +26,7 @@ export function useSlackSSOButton() {
         scope: 'openid email profile',
         response_type: 'code',
         redirect_uri: `${location.origin}${pagePaths.ssoSlack.path}`,
-        // client_id: import.meta.env.BASE_URL, // TODO: fix me!
+        client_id: import.meta.env.VITE_SLACK_CLIENT_ID,
         team: teamId,
         state: token.state,
         nonce: token.nonce,
