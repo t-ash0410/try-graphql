@@ -22,7 +22,7 @@ const jwtSecret = JWT_SECRET || 'secret'
 
 const slackClientId = SLACK_CLIENT_ID || ''
 const slackClientSecret = SLACK_CLIENT_SECRET || ''
-const slackSSORedirectUrl = SLACK_SSO_REDIRECT_URL || ''
+const slackSSORedirectUrl = SLACK_SSO_REDIRECT_URL || `${CORS_ORIGIN}/sso/slack`
 
 const useHttps = USE_HTTPS === 'true'
 const tlsCertPath = TLS_CERT_PATH || ''
