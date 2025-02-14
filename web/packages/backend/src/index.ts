@@ -13,7 +13,7 @@ import { type PylonConfig, app } from '@getcronit/pylon'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
 
-app
+const customApp = app
   .use(
     cors({
       origin: CORS_ORIGIN,
@@ -39,7 +39,7 @@ const config: PylonConfig = {
 }
 
 export default {
-  fetch: app.fetch,
+  fetch: customApp.fetch,
   port: BFF_PORT,
   tls: USE_HTTPS
     ? {
@@ -50,6 +50,6 @@ export default {
     : undefined,
 }
 
-export type App = typeof app
+export type App = typeof customApp
 
 export { graphql, config }
