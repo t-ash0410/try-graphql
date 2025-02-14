@@ -38,7 +38,7 @@ jobs:
 
       - name: Prepare Test
         run: |
-          docker compose -f ../docker/docker-compose.ci.yaml up -d
+          docker compose -f ../../../docker/docker-compose.yaml up -d
           bun test:init-db
 
       - name: Test
