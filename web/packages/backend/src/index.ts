@@ -1,5 +1,4 @@
-import { health } from '@backend/graphql/health'
-import { createTicket, ticket, tickets } from '@backend/graphql/ticket'
+import { createTicket, ticket, tickets } from '@backend/graphql'
 import {
   BFF_PORT,
   CORS_ORIGIN,
@@ -7,8 +6,8 @@ import {
   TLS_KEY_PATH,
   USE_HTTPS,
 } from '@backend/lib/env'
-import { errorHandler } from '@backend/plugins/error-handler'
-import { authRoute } from '@backend/routes/auth'
+import { errorHandler } from '@backend/plugins'
+import { authRoute, healthRoute } from '@backend/routes'
 import { type PylonConfig, app } from '@getcronit/pylon'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
@@ -21,11 +20,11 @@ app
     }),
     secureHeaders(),
   )
+  .route('/health', healthRoute)
   .route('/auth', authRoute)
 
 const graphql = {
   Query: {
-    health,
     tickets,
     ticket,
   },
