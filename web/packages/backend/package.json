@@ -3,8 +3,9 @@
   "scripts": {
     "dev": "pylon dev -c 'bun run .pylon/index.js'",
     "build": "pylon build",
-    "test": "bun run build && bun test:init && bun test",
-    "test:init": "dotenv -e .env.test -- bunx prisma migrate reset --force",
+    "test": "bun run build && bun test:init && bun test:with-db",
+    "test:init": "bun dotenv -e .env.test -- prisma migrate reset --force",
+    "test:with-db": "bun dotenv -e .env.test -- bun test",
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "check": "biome check",
