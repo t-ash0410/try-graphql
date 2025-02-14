@@ -25,7 +25,7 @@ export function useSlackSSOButton() {
       const params = new URLSearchParams({
         scope: 'openid email profile',
         response_type: 'code',
-        redirect_uri: `${location.origin}${pagePaths.sso.slack.path}`,
+        redirect_uri: `${location.origin}${pagePaths.ssoSlack.path}`,
         client_id: import.meta.env.BASE_URL,
         team: teamId,
         state: token.state,

@@ -1,6 +1,6 @@
-import { getHC } from '@frontend/lib'
-import { handleError } from '@frontend/util/handle-error'
 import { useQuery } from '@tanstack/react-query'
+import { getHC } from '~/lib'
+import { handleError } from '~/util/handle-error'
 import { authQueryKeys } from '../query-key-factory'
 import type { GetSSOSlackQueryParams } from './types'
 
