@@ -5,7 +5,8 @@
     "paths": {
       "@backend/*": ["./src/*"],
       "@backend-tests/*": ["./tests/*"]
-    }
+    },
+    "outDir": ".pylon"
   },
   "include": ["pylon.d.ts", "src/**/*.ts", "tests/**/*.ts"]
 }
