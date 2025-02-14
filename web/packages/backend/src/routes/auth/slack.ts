@@ -1,10 +1,10 @@
+import { db } from '@backend/lib/db'
 import {
   DOMAIN,
   SLACK_CLIENT_ID,
   SLACK_CLIENT_SECRET,
   SLACK_SSO_REDIRECT_URL,
-} from '@backend/env'
-import { db } from '@backend/lib/db'
+} from '@backend/lib/env'
 import { createJWT, setJWTCookie } from '@backend/lib/jwt'
 import { zValidator } from '@hono/zod-validator'
 import type { Context } from 'hono'

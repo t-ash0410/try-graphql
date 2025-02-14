@@ -1,4 +1,4 @@
-import { DOMAIN } from '@backend/env'
+import { DOMAIN } from '@backend/lib/env'
 import { setCookie } from 'hono/cookie'
 import type { CookieOptions } from 'hono/utils/cookie'
 import { authFactory } from './app'

@@ -1,4 +1,4 @@
-import { DOMAIN, JWT_KEY, JWT_SECRET } from '@backend/env'
+import { DOMAIN, JWT_KEY, JWT_SECRET } from '@backend/lib/env'
 import type { Context } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { sign, verify } from 'hono/jwt'

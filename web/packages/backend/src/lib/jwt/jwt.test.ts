@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { JWT_KEY } from '@backend/env'
+import { JWT_KEY } from '@backend/lib/env'
 import { Hono } from 'hono'
 import { createJWT, setJWTCookie, verifyJWTCookie } from './jwt'
 
