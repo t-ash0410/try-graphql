@@ -20,6 +20,7 @@ jobs:
         working-directory: ./web/packages/backend
     permissions:
       contents: read
+      pull-requests: write
     steps:
       - name: Check out codes
         uses: actions/checkout@v4
