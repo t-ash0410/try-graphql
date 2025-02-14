@@ -1,13 +1,22 @@
 import { db } from '@backend/lib/db'
-import { ServiceError } from '@getcronit/pylon'
+import { ServiceError, getContext } from '@getcronit/pylon'
 
 const tickets = async () => {
-  return await db.ticket.findMany()
+  const ctx = getContext()
+
+  return await db.ticket.findMany({
+    where: {
+      authorId: ctx.var.activeUser.userId,
+    },
+  })
 }
 
 const ticket = async (id: number) => {
+  const ctx = getContext()
+
   const ret = await db.ticket.findFirst({
     where: {
+      authorId: ctx.var.activeUser.userId,
       ticketId: id,
     },
   })

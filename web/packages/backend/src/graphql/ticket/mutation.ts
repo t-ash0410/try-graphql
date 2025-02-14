@@ -7,14 +7,13 @@ const createTicket = async (
   deadline?: Date,
 ) => {
   const ctx = getContext()
-  const { userId } = ctx.var.activeUser
 
   return await db.ticket.create({
     data: {
       title,
       description,
       deadline,
-      authorId: userId,
+      authorId: ctx.var.activeUser.userId,
     },
   })
 }
