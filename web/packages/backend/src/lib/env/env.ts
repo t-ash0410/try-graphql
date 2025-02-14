@@ -16,7 +16,7 @@ const {
 } = process.env
 
 const portAsNumber = BFF_PORT ? Number(BFF_PORT) : 8080
-const corsOrigin = CORS_ORIGIN || 'https://localhost:3000'
+const corsOrigin = CORS_ORIGIN || 'https://localhost:5173'
 const jwtKey = JWT_KEY || 'jwt'
 const jwtSecret = JWT_SECRET || 'secret'
 
