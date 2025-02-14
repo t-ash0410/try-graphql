@@ -9,7 +9,6 @@ import {
   setSystemTime,
   spyOn,
 } from 'bun:test'
-import { dummyUser } from '@backend/fixtures'
 import { db } from '@backend/lib/db'
 import {
   JWT_KEY,
@@ -17,6 +16,7 @@ import {
   SLACK_CLIENT_SECRET,
   SLACK_SSO_REDIRECT_URL,
 } from '@backend/lib/env'
+import { dummyUser } from '@backend/lib/fixtures'
 import { createJWT } from '@backend/lib/jwt'
 import {
   type JWTVerifyResult,
