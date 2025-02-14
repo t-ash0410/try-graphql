@@ -6,5 +6,5 @@
       "@backend/*": ["./src/*"]
     }
   },
-  "include": ["pylon.d.ts", "src/**/*.ts"]
+  "include": ["pylon.d.ts", "src/**/*.ts", "tests/**/*.ts"]
 }
