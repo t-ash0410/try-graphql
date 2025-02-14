@@ -11,6 +11,8 @@ const tickets = async (ticketId?: number) => {
     },
   })
 
+  console.log(res)
+
   return []
 }
 
