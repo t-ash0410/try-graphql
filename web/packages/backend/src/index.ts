@@ -21,9 +21,9 @@ const customApp = app
     }),
     secureHeaders(),
   )
-  .use('/graphql', authN)
   .route('/health', healthRoute)
   .route('/auth', authRoute)
+  .use('*', authN)
   .route('/session', sessionRoute)
 
 const graphql = {
