@@ -10,6 +10,7 @@ import { authN } from '@backend/middlewares'
 import { errorHandler } from '@backend/plugins'
 import { authRoute, healthRoute, sessionRoute } from '@backend/routes'
 import { type PylonConfig, app } from '@getcronit/pylon'
+import { except } from 'hono/combine'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
 
@@ -21,9 +22,9 @@ const customApp = app
     }),
     secureHeaders(),
   )
+  .use('*', except(['/health/*', '/auth/*'], authN))
   .route('/health', healthRoute)
   .route('/auth', authRoute)
-  .use('*', authN)
   .route('/session', sessionRoute)
 
 const graphql = {
