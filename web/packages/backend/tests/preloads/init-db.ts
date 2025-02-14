@@ -6,5 +6,5 @@ beforeAll(async () => {
     data: dummyUser,
   })
 
-  console.info('\nInitialized test database')
+  console.info('\nInitialized test database\n')
 })
