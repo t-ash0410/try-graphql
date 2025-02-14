@@ -1,21 +1,28 @@
 import { db } from '@backend/lib/db'
-import { getContext } from '@getcronit/pylon'
+import { ServiceError, createDecorator, getContext } from '@getcronit/pylon'
 
-const createTicket = async (
-  title: string,
-  description?: string,
-  deadline?: Date,
-) => {
-  const ctx = getContext()
+const validate = createDecorator(async (title: string) => {
+  if (title.length < 1) {
+    throw new ServiceError('Title cannot be empty', {
+      code: 'INVALID_TITLE',
+      statusCode: 400,
+    })
+  }
+})
 
-  return await db.ticket.create({
-    data: {
-      title,
-      description,
-      deadline,
-      authorId: ctx.var.activeUser.userId,
-    },
-  })
-}
+const createTicket = validate(
+  async (title: string, description?: string, deadline?: Date) => {
+    const ctx = getContext()
+
+    return await db.ticket.create({
+      data: {
+        title,
+        description,
+        deadline,
+        authorId: ctx.var.activeUser.userId,
+      },
+    })
+  },
+)
 
 export { createTicket }
