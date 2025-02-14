@@ -24,6 +24,9 @@ jobs:
       - name: Check out codes
         uses: actions/checkout@v4
 
+      - name: Setup containers
+        run: docker compose -f ../../../docker/docker-compose.yaml up -d
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
@@ -37,9 +40,7 @@ jobs:
         run: bun run build
 
       - name: Prepare Test
-        run: |
-          docker compose -f ../../../docker/docker-compose.yaml up -d
-          bun test:init
+        run: bun test:init
 
       - name: Test
         run: bun test
