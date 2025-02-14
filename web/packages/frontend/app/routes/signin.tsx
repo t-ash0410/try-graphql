@@ -8,6 +8,6 @@ export function meta(_: Route.MetaArgs) {
   ]
 }
 
-export default function Home() {
+export default () => {
   return <SigninForm />
 }

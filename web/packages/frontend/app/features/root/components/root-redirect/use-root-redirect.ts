@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { redirect } from 'react-router'
+import { useNavigate } from 'react-router'
 import { pagePaths } from '~/consts'
 import { useGetSession } from '~/hooks/api'
 import { handleError } from '~/util/handle-error'
 
 export function useRootRedirect() {
+  const nav = useNavigate()
   const { data, isLoading, isError } = useGetSession()
   useEffect(() => {
     if (isLoading || !data) return
@@ -13,9 +14,9 @@ export function useRootRedirect() {
       return
     }
     if (data.status === 401) {
-      redirect(pagePaths.signin.path)
+      nav(pagePaths.signin.path)
       return
     }
-    redirect(pagePaths.tickets.path)
-  }, [data, isLoading, isError])
+    nav(pagePaths.tickets.path)
+  }, [nav, data, isLoading, isError])
 }
