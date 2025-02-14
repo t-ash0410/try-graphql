@@ -6,7 +6,9 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "check": "biome check",
+    "check:write": "biome check --write"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
@@ -25,6 +27,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@react-router/dev": "^7.1.5",
     "@tailwindcss/vite": "^4.0.6",
     "@try-graphql/backend": "workspace:*",

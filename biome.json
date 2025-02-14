@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", "dist", ".pylon"]
+    "ignore": ["node_modules", "dist", ".pylon", ".react-router", "build"]
   },
   "formatter": {
     "enabled": true,
