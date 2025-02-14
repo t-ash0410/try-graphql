@@ -4,12 +4,14 @@ import { getContext } from '@getcronit/pylon'
 const tickets = async (ticketId?: number) => {
   const ctx = getContext()
 
-  return await db.ticket.findMany({
+  const res = await db.ticket.findMany({
     where: {
       authorId: ctx.var.activeUser.userId,
       ticketId,
     },
   })
+
+  return []
 }
 
 export { tickets }
