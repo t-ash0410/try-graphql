@@ -3,6 +3,8 @@
   "scripts": {
     "dev": "pylon dev -c 'bun run .pylon/index.js'",
     "build": "pylon build",
+    "test": "bun run build && bun test:reset-db && bun test",
+    "test:reset-db": "dotenv -e .env.test -- bunx prisma migrate reset --force --skip-generate",
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "check": "biome check",
@@ -12,6 +14,7 @@
     "@biomejs/biome": "^1.9.4",
     "@getcronit/pylon-dev": "^1.0.3",
     "@types/bun": "latest",
+    "dotenv-cli": "^8.0.0",
     "ohash": "^1.1.4",
     "prisma": "^6.3.1"
   },
