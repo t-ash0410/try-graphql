@@ -8,7 +8,7 @@ const SLACK_BASE_URL = 'https://slack.com/openid/connect/authorize'
 
 export function useSlackSSOButton() {
   const teamId = useGetLocalStorage('SLACK_TEAM_ID')
-  const bff = getHC()
+  const api = getHC()
 
   const [isPending, setIsPending] = useState<boolean>(false)
 
@@ -16,7 +16,7 @@ export function useSlackSSOButton() {
     setIsPending(true)
 
     try {
-      const res = await bff.auth.oidc.session.$get()
+      const res = await api.auth.oidc.session.$get()
       if (!res.ok) {
         throw new Error('サインインに失敗しました')
       }
@@ -26,7 +26,7 @@ export function useSlackSSOButton() {
         scope: 'openid email profile',
         response_type: 'code',
         redirect_uri: `${location.origin}${pagePaths.ssoSlack.path}`,
-        client_id: import.meta.env.BASE_URL,
+        // client_id: import.meta.env.BASE_URL, // TODO: fix me!
         team: teamId,
         state: token.state,
         nonce: token.nonce,
