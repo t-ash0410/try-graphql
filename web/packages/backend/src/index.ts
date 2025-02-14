@@ -50,4 +50,6 @@ export default {
     : undefined,
 }
 
+export type App = typeof app
+
 export { graphql, config }
