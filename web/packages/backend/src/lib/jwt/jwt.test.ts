@@ -35,17 +35,17 @@ describe('setJWTCookie', async () => {
 })
 
 describe('verifyJWTCookie', async () => {
-  it('returns valid payload', async () => {
-    const app = new Hono().get('/', async (c) => {
-      const ret = await verifyJWTCookie({
-        ctx: c,
-      })
-      if (ret.isErr()) {
-        return c.json({ err: ret.error }, 500)
-      }
-      return c.json(ret.value)
+  const app = new Hono().get('/', async (c) => {
+    const ret = await verifyJWTCookie({
+      ctx: c,
     })
+    if (ret.isErr()) {
+      return c.json({ err: ret.error }, 500)
+    }
+    return c.json(ret.value)
+  })
 
+  it('returns valid payload', async () => {
     const now = new Date()
     const jwt = await createJWT({
       userId: 1,
@@ -63,5 +63,13 @@ describe('verifyJWTCookie', async () => {
       iat: Math.floor(now.getTime() / 1000),
       exp: Math.floor(now.getTime() / 1000) + 3 * 60 * 60,
     })
+  })
+
+  it('throws error if jwt is not included in cookie', async () => {
+    const res = await app.request('/', {
+      headers: {}, // important
+    })
+
+    expect(res.status).toBe(500)
   })
 })
