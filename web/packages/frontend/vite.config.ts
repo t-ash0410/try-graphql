@@ -4,13 +4,24 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
+let httpsOption:
+  | {
+      key: Buffer
+      cert: Buffer
+    }
+  | undefined
+
+try {
+  httpsOption = {
+    key: readFileSync(process.env.TLS_KEY_PATH || ''),
+    cert: readFileSync(process.env.TLS_CERT_PATH || ''),
+  }
+} catch {}
+
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: {
-    https: {
-      key: readFileSync(process.env.TLS_KEY_PATH || ''),
-      cert: readFileSync(process.env.TLS_CERT_PATH || ''),
-    },
+    https: httpsOption,
     proxy: {},
   },
 })
