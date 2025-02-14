@@ -1,18 +1,18 @@
 export const pagePaths = {
   root: {
     path: '/',
-    file: 'routes/root.tsx',
+    file: 'routes/public/root.tsx',
   },
   signin: {
     path: '/signin',
-    file: 'routes/signin.tsx',
+    file: 'routes/public/signin.tsx',
   },
   ssoSlack: {
     path: '/sso/slack',
-    file: 'routes/signin.tsx',
+    file: 'routes/sso/slack.tsx',
   },
   tickets: {
     path: '/tickets',
-    file: 'routes/signin.tsx',
+    file: 'routes/tickets/list.tsx',
   },
 }
