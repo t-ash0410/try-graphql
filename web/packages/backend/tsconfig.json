@@ -3,8 +3,10 @@
   "compilerOptions": {
     "types": ["bun-types"],
     "paths": {
-      "@backend/*": ["./src/*"]
-    }
+      "@backend/*": ["./src/*"],
+      "@backend-tests/*": ["./tests/*"]
+    },
+    "outDir": ".pylon"
   },
-  "include": ["pylon.d.ts", "src/**/*.ts"]
+  "include": ["pylon.d.ts", "src/**/*.ts", "tests/**/*.ts"]
 }

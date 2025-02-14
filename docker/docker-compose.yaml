@@ -1,0 +1,12 @@
+services:
+  postgres:
+    container_name: try-graphql-postgres
+    image: postgres:latest
+    restart: always
+    ports: 
+      - "5432:5432"
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"

@@ -13,9 +13,10 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.bun
-            pkgs.mkcert
+          packages = with pkgs; [
+            nodejs
+            bun
+            mkcert
           ];
         };
       }

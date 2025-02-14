@@ -1,8 +1,9 @@
 {
-    "recommendations": [
-        "streetsidesoftware.code-spell-checker",
-        "biomejs.biome",
-        "ms-vscode.vscode-typescript-next",
-        "bbenoist.nix"
-    ]
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "biomejs.biome",
+    "ms-vscode.vscode-typescript-next",
+    "bbenoist.nix",
+    "Prisma.prisma"
+  ]
 }

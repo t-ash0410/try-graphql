@@ -3,6 +3,10 @@
   "scripts": {
     "dev": "pylon dev -c 'bun run .pylon/index.js'",
     "build": "pylon build",
+    "test": "dotenv -e .env.test -- bun migrate:reset && bun run build && bun test",
+    "migrate": "prisma migrate dev",
+    "migrate:reset": "prisma migrate reset --force",
+    "studio": "prisma studio",
     "check": "biome check",
     "check:write": "biome check --write"
   },
@@ -10,7 +14,9 @@
     "@biomejs/biome": "^1.9.4",
     "@getcronit/pylon-dev": "^1.0.3",
     "@types/bun": "latest",
-    "ohash": "^1.1.4"
+    "dotenv-cli": "^8.0.0",
+    "ohash": "^1.1.4",
+    "prisma": "^6.3.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -18,7 +24,10 @@
   "dependencies": {
     "@envelop/core": "^5.0.3",
     "@getcronit/pylon": "^2.9.4",
+    "@hono/zod-validator": "^0.4.2",
+    "@prisma/client": "^6.3.1",
     "hono": "^4.7.0",
+    "neverthrow": "^8.1.1",
     "zod": "^3.24.1"
   }
 }
