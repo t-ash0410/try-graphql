@@ -79,6 +79,19 @@ export const generatedSchema = {
       __type: "CreateTicket!",
       __args: { deadline: "String", description: "String", title: "String!" },
     },
+    deleteTicket: { __type: "Void", __args: { ticketId: "Number!" } },
+    updateTicketDeadline: {
+      __type: "Void",
+      __args: { deadline: "String", ticketId: "Number!" },
+    },
+    updateTicketDescription: {
+      __type: "Void",
+      __args: { description: "String", ticketId: "Number!" },
+    },
+    updateTicketTitle: {
+      __type: "Void",
+      __args: { ticketId: "Number!", title: "String!" },
+    },
   },
   query: {
     __typename: { __type: "String!" },
@@ -126,6 +139,21 @@ export interface Mutation {
     description?: Maybe<ScalarsEnums["String"]>;
     title: ScalarsEnums["String"];
   }) => CreateTicket;
+  deleteTicket: (args: {
+    ticketId: ScalarsEnums["Number"];
+  }) => Maybe<ScalarsEnums["Void"]>;
+  updateTicketDeadline: (args: {
+    deadline?: Maybe<ScalarsEnums["String"]>;
+    ticketId: ScalarsEnums["Number"];
+  }) => Maybe<ScalarsEnums["Void"]>;
+  updateTicketDescription: (args: {
+    description?: Maybe<ScalarsEnums["String"]>;
+    ticketId: ScalarsEnums["Number"];
+  }) => Maybe<ScalarsEnums["Void"]>;
+  updateTicketTitle: (args: {
+    ticketId: ScalarsEnums["Number"];
+    title: ScalarsEnums["String"];
+  }) => Maybe<ScalarsEnums["Void"]>;
 }
 
 export interface Query {

@@ -34,11 +34,33 @@ export const TicketList = () => {
   //   })
   // }
 
+  // Update
+  const [updateTitle] = useMutation<
+    void,
+    Parameters<Mutation['updateTicketTitle']>[0]
+  >((mutation, inputs) => {
+    mutation.updateTicketTitle(inputs)
+  })
+  const [updateDescription] = useMutation<
+    void,
+    Parameters<Mutation['updateTicketDescription']>[0]
+  >((mutation, inputs) => {
+    mutation.updateTicketDescription(inputs)
+  })
+  const [updateDeadline] = useMutation<
+    void,
+    Parameters<Mutation['updateTicketDeadline']>[0]
+  >((mutation, inputs) => {
+    mutation.updateTicketDeadline(inputs)
+  })
+
   // Delete
-  // const deleteMutation = useDeleteTicket(queryClient)
-  // const handleDeleteTicket = (id: string) => {
-  //   deleteMutation.mutate(id)
-  // }
+  const [deleteTicket] = useMutation<
+    void,
+    Parameters<Mutation['deleteTicket']>[0]
+  >((mutation, inputs) => {
+    mutation.deleteTicket(inputs)
+  })
 
   if ($state.error) {
     handleError($state.error)
@@ -70,16 +92,37 @@ export const TicketList = () => {
         >
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold w-full">
-              <EditableTextField value={ticket.title} onSave={console.log} />
+              <EditableTextField
+                value={ticket.title}
+                onSave={(title) =>
+                  updateTitle({
+                    args: {
+                      ticketId: ticket.ticketId,
+                      title,
+                    },
+                  })
+                }
+              />
             </h3>
             <div className="flex space-x-2">
-              <DeleteButton onDelete={console.log} />
+              <DeleteButton
+                onDelete={() =>
+                  deleteTicket({ args: { ticketId: ticket.ticketId } })
+                }
+              />
             </div>
           </div>
           <div className="mb-2">
             <EditableTextField
               value={ticket.description ?? ''}
-              onSave={console.log}
+              onSave={(description) =>
+                updateDescription({
+                  args: {
+                    ticketId: ticket.ticketId,
+                    description,
+                  },
+                })
+              }
               inputType="textarea"
             />
           </div>
@@ -87,7 +130,14 @@ export const TicketList = () => {
             期限:&nbsp;
             <EditableDateTimeField
               value={ticket.deadline ? new Date(ticket.deadline) : undefined}
-              onSave={console.log}
+              onSave={(deadline) =>
+                updateDeadline({
+                  args: {
+                    ticketId: ticket.ticketId,
+                    deadline: deadline.toISOString(),
+                  },
+                })
+              }
             />
           </p>
           <p
