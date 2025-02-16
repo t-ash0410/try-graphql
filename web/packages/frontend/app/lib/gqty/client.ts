@@ -18,7 +18,7 @@ const queryFetcher: QueryFetcher = async (
   { query, variables, operationName },
   fetchOptions,
 ) => {
-  const response = await fetch('/api/graphql', {
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
