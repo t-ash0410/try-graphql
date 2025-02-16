@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "gqty:generate": "bunx @gqty/cli --react --typescript --no-install --target app/lib/gqty/client.ts ../backend/.pylon/schema.graphql",
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
@@ -11,6 +12,7 @@
     "check:write": "biome check --write"
   },
   "dependencies": {
+    "@gqty/react": "^3.1.0",
     "@radix-ui/react-slot": "^1.1.2",
     "@react-router/node": "^7.1.5",
     "@react-router/serve": "^7.1.5",
