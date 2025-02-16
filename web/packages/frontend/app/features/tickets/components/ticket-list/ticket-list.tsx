@@ -24,17 +24,6 @@ export const TicketList = () => {
   })
 
   // Update
-  // const updateMutation = useUpdateTicket(queryClient)
-  // const handleEditTitle = (id: string, value: string) => {
-  //   updateMutation.mutate({
-  //     ticketId: id,
-  //     body: {
-  //       title: value,
-  //     },
-  //   })
-  // }
-
-  // Update
   const [updateTitle] = useMutation<
     void,
     Parameters<Mutation['updateTicketTitle']>[0]
