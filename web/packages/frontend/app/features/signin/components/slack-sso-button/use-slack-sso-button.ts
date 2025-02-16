@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { pagePaths } from '~/consts'
 import { useGetLocalStorage } from '~/hooks'
-import { getHC } from '~/lib'
+import { getHC } from '~/lib/hono'
 import { handleError } from '~/util/handle-error'
 
 const SLACK_BASE_URL = 'https://slack.com/openid/connect/authorize'
