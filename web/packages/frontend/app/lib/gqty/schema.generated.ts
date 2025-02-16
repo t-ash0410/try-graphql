@@ -55,9 +55,17 @@ export const scalarsEnumsHash: ScalarsEnumsHash = {
   Void: true,
 };
 export const generatedSchema = {
+  CreateTicket: {
+    __typename: { __type: "String!" },
+    createdAt: { __type: "Date!" },
+    deadline: { __type: "Date" },
+    description: { __type: "String" },
+    ticketId: { __type: "Number!" },
+    title: { __type: "String!" },
+    updatedAt: { __type: "Date!" },
+  },
   Tickets: {
     __typename: { __type: "String!" },
-    authorId: { __type: "Number!" },
     createdAt: { __type: "Date!" },
     deadline: { __type: "Date" },
     description: { __type: "String" },
@@ -68,8 +76,8 @@ export const generatedSchema = {
   mutation: {
     __typename: { __type: "String!" },
     createTicket: {
-      __type: "Tickets!",
-      __args: { deadline: "Date", description: "String", title: "String!" },
+      __type: "CreateTicket!",
+      __args: { deadline: "String", description: "String", title: "String!" },
     },
   },
   query: {
@@ -79,9 +87,24 @@ export const generatedSchema = {
   subscription: {},
 } as const;
 
+export interface CreateTicket {
+  __typename?: "CreateTicket";
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  createdAt: ScalarsEnums["Date"];
+  deadline?: Maybe<ScalarsEnums["Date"]>;
+  description?: Maybe<ScalarsEnums["String"]>;
+  ticketId: ScalarsEnums["Number"];
+  title: ScalarsEnums["String"];
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  updatedAt: ScalarsEnums["Date"];
+}
+
 export interface Tickets {
   __typename?: "Tickets";
-  authorId: ScalarsEnums["Number"];
   /**
    * Enables basic storage and retrieval of dates and times.
    */
@@ -99,10 +122,10 @@ export interface Tickets {
 export interface Mutation {
   __typename?: "Mutation";
   createTicket: (args: {
-    deadline?: Maybe<ScalarsEnums["Date"]>;
+    deadline?: Maybe<ScalarsEnums["String"]>;
     description?: Maybe<ScalarsEnums["String"]>;
     title: ScalarsEnums["String"];
-  }) => Tickets;
+  }) => CreateTicket;
 }
 
 export interface Query {
