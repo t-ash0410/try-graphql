@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, TableSkeleton } from '~/components'
 import { useMutation, useQuery } from '~/lib/gqty'
+import type { Mutation } from '~/lib/gqty'
 import { formatDate } from '~/util/date'
 import { handleError } from '~/util/handle-error'
 import { DeleteButton } from '../delete-button'
@@ -13,9 +14,13 @@ export const TicketList = () => {
 
   // Create
   const [isCreating, setIsCreating] = useState(false)
-  const [createTicket] = useMutation((mutation, inputs) => {
-    mutation.createTicket(inputs)
+  const [createTicket] = useMutation<
+    void,
+    Parameters<Mutation['createTicket']>[0]
+  >((mutation, inputs) => {
+    const ticket = mutation.createTicket(inputs)
     setIsCreating(false)
+    ticket.ticketId
   })
 
   // Update
@@ -44,7 +49,11 @@ export const TicketList = () => {
       <div className="mb-4">
         {isCreating ? (
           <TicketForm
-            onSubmit={() => createTicket()}
+            onSubmit={(t) =>
+              createTicket({
+                args: t,
+              })
+            }
             onCancel={() => setIsCreating(false)}
           />
         ) : (
@@ -55,7 +64,10 @@ export const TicketList = () => {
       </div>
       {!data ? <TableSkeleton /> : <></>}
       {data.map((ticket) => (
-        <div key={ticket.ticketId} className="bg-white p-4 rounded-lg shadow">
+        <div
+          key={`ticket-${ticket.ticketId}`}
+          className="bg-white p-4 rounded-lg shadow"
+        >
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold w-full">
               <EditableTextField value={ticket.title} onSave={console.log} />

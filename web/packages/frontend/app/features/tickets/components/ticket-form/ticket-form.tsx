@@ -1,17 +1,9 @@
 import { useState } from 'react'
 import { Button, DateTimePicker, Input, Textarea } from '~/components'
-
-type Ticket = {
-  id: string
-  title: string
-  description: string
-  deadline: Date
-  createdAt: Date
-  updatedAt: Date
-}
+import type { Mutation } from '~/lib/gqty'
 
 type TicketFormProps = {
-  onSubmit: (ticket: Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>) => void
+  onSubmit: (ticket: Parameters<Mutation['createTicket']>[0]) => void
   onCancel: () => void
 }
 
