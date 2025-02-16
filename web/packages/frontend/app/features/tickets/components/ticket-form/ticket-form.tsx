@@ -17,7 +17,7 @@ export const TicketForm = ({ onSubmit, onCancel }: TicketFormProps) => {
     onSubmit({
       title,
       description,
-      deadline,
+      deadline: deadline.toISOString(),
     })
   }
 
