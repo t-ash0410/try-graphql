@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { JWT_KEY } from '@backend/lib/env'
+import { DOMAIN, JWT_KEY } from '@backend/lib/env'
 import { Hono } from 'hono'
 import { createJWT, setJWTCookie, verifyJWTCookie } from './jwt'
 
@@ -11,7 +11,7 @@ describe('createJWT', async () => {
     })
 
     expect(res).toMatchInlineSnapshot(
-      `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.py11kQ-hwg944MFK5Itkcv9WqI_ID3KBwoGXigXwa-8"`,
+      `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwLCJpc3MiOiJsb2NhbGhvc3QifQ.AaIJrE7EvUI0bnJ-LqE1VH5dCvC9FBKCXxLELwVv7h8"`,
     )
   })
 })
@@ -28,8 +28,8 @@ describe('setJWTCookie', async () => {
     })
     const res = await app.request('/')
 
-    expect(res.headers.get('set-cookie')).toBe(
-      `${JWT_KEY}=jwt; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict`,
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"jwt=jwt; Domain=localhost; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict"`,
     )
   })
 })
@@ -60,6 +60,7 @@ describe('verifyJWTCookie', async () => {
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({
       sub: 1,
+      iss: DOMAIN,
       iat: Math.floor(now.getTime() / 1000),
       exp: Math.floor(now.getTime() / 1000) + 3 * 60 * 60,
     })

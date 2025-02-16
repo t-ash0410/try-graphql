@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'bun:test'
-import { JWT_KEY } from '@backend/lib/env'
 import { dummyUser } from '@backend/lib/fixtures'
 import type { Variables } from '@getcronit/pylon'
 import { Hono } from 'hono'
@@ -32,8 +31,8 @@ describe('DELETE /', () => {
     })
 
     expect(res.status).toBe(200)
-    expect(res.headers.get('set-cookie')).toBe(
-      `${JWT_KEY}=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Strict`,
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"jwt=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
     )
   })
 })

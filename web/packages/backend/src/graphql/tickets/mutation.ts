@@ -14,7 +14,7 @@ const createTicket = validate(
   async (title: string, description?: string, deadline?: Date) => {
     const ctx = getContext()
 
-    return await db.ticket.create({
+    const res = await db.ticket.create({
       data: {
         title,
         description,
@@ -22,6 +22,14 @@ const createTicket = validate(
         authorId: ctx.var.activeUser.userId,
       },
     })
+    return {
+      ticketId: res.ticketId,
+      createdAt: res.createdAt,
+      updatedAt: res.updatedAt,
+      title: res.title,
+      description: res.description,
+      deadline: res.deadline,
+    }
   },
 )
 

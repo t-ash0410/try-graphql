@@ -11,13 +11,12 @@ import {
 } from 'bun:test'
 import { db } from '@backend/lib/db'
 import {
-  JWT_KEY,
+  DOMAIN,
   SLACK_CLIENT_ID,
   SLACK_CLIENT_SECRET,
   SLACK_SSO_REDIRECT_URL,
 } from '@backend/lib/env'
 import { dummyUser } from '@backend/lib/fixtures'
-import { createJWT } from '@backend/lib/jwt'
 import {
   type JWTVerifyResult,
   type ResolvedKey,
@@ -57,8 +56,8 @@ describe('GET /oidc/session', async () => {
       nonce,
     })
     expect(res.headers.get('set-cookie')).toBe(
-      `state=${state}; Path=/; Expires=Wed, 01 Jan 2020 00:10:00 GMT; HttpOnly; Secure; SameSite=Strict, ` +
-        `nonce=${nonce}; Path=/; Expires=Wed, 01 Jan 2020 00:10:00 GMT; HttpOnly; Secure; SameSite=Strict`,
+      `state=${state}; Domain=${DOMAIN}; Path=/; Expires=Wed, 01 Jan 2020 00:10:00 GMT; HttpOnly; Secure; SameSite=Strict, ` +
+        `nonce=${nonce}; Domain=${DOMAIN}; Path=/; Expires=Wed, 01 Jan 2020 00:10:00 GMT; HttpOnly; Secure; SameSite=Strict`,
     )
   })
 })
@@ -67,10 +66,6 @@ describe('GET /oidc/slack', async () => {
   const SLACK_SSO_URL = 'https://slack.com/api/openid.connect.token'
 
   const now = new Date('2020-01-01T00:00:00.000Z')
-
-  const deleteCookie =
-    'state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Strict, ' +
-    'nonce=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Strict'
 
   beforeAll(() => {
     authRoute.onError((_, c) => {
@@ -144,20 +139,15 @@ describe('GET /oidc/slack', async () => {
       },
     })
 
-    const jwt = await createJWT({
-      userId: dummyUser.userId,
-      now,
-    })
-
     expect(res.status).toBe(200)
     expect(await res.json()).toMatchInlineSnapshot(`
       {
-        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.py11kQ-hwg944MFK5Itkcv9WqI_ID3KBwoGXigXwa-8",
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwLCJpc3MiOiJsb2NhbGhvc3QifQ.AaIJrE7EvUI0bnJ-LqE1VH5dCvC9FBKCXxLELwVv7h8",
         "slackTeamId": "TXXXXX",
       }
     `)
-    expect(res.headers.get('set-cookie')).toBe(
-      `${deleteCookie}, ${JWT_KEY}=${jwt}; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict`,
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwLCJpc3MiOiJsb2NhbGhvc3QifQ.AaIJrE7EvUI0bnJ-LqE1VH5dCvC9FBKCXxLELwVv7h8; Domain=localhost; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict"`,
     )
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
@@ -207,20 +197,15 @@ describe('GET /oidc/slack', async () => {
       },
     })
 
-    const jwt = await createJWT({
-      userId: dummyUser.userId,
-      now,
-    })
-
     expect(res.status).toBe(200)
     expect(await res.json()).toMatchInlineSnapshot(`
       {
-        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwfQ.py11kQ-hwg944MFK5Itkcv9WqI_ID3KBwoGXigXwa-8",
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwLCJpc3MiOiJsb2NhbGhvc3QifQ.AaIJrE7EvUI0bnJ-LqE1VH5dCvC9FBKCXxLELwVv7h8",
         "slackTeamId": "TXXXXX",
       }
     `)
-    expect(res.headers.get('set-cookie')).toBe(
-      `${deleteCookie}, ${JWT_KEY}=${jwt}; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict`,
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTU3NzgzNjgwMCwiZXhwIjoxNTc3ODQ3NjAwLCJpc3MiOiJsb2NhbGhvc3QifQ.AaIJrE7EvUI0bnJ-LqE1VH5dCvC9FBKCXxLELwVv7h8; Domain=localhost; Path=/; Expires=Wed, 01 Jan 2020 03:00:00 GMT; HttpOnly; Secure; SameSite=Strict"`,
     )
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
@@ -268,7 +253,9 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 
   it('returns 500 if state is not match', async () => {
@@ -284,7 +271,9 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 
   it('returns 500 if request to slack api fails', async () => {
@@ -304,7 +293,9 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 
   it('returns 500 if the response schema from the slack api is not ok', async () => {
@@ -329,7 +320,9 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 
   it('returns 500 if the response schema from the slack api is not expected', async () => {
@@ -353,7 +346,9 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 
   it('returns 500 if nonce is not set in cookie', async () => {
@@ -369,7 +364,9 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 
   it('returns 500 if nonce is not match', async () => {
@@ -385,6 +382,8 @@ describe('GET /oidc/slack', async () => {
     })
 
     expect(res.status).toBe(500)
-    expect(res.headers.get('set-cookie')).toBe(deleteCookie)
+    expect(res.headers.get('set-cookie')).toMatchInlineSnapshot(
+      `"state=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict, nonce=; Max-Age=0; Domain=localhost; Path=/; HttpOnly; Secure; SameSite=Strict"`,
+    )
   })
 })

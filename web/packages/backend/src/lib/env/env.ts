@@ -17,6 +17,7 @@ const {
 
 const portAsNumber = BFF_PORT ? Number(BFF_PORT) : 8080
 const corsOrigin = CORS_ORIGIN || 'https://localhost:5173'
+const domain = DOMAIN || 'localhost'
 const jwtKey = JWT_KEY || 'jwt'
 const jwtSecret = JWT_SECRET || 'secret'
 
@@ -31,7 +32,7 @@ const tlsKeyPath = TLS_KEY_PATH || ''
 export {
   portAsNumber as BFF_PORT,
   corsOrigin as CORS_ORIGIN,
-  DOMAIN,
+  domain as DOMAIN,
   jwtSecret as JWT_SECRET,
   jwtKey as JWT_KEY,
   slackClientId as SLACK_CLIENT_ID,
