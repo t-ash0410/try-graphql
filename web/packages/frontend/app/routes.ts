@@ -12,7 +12,7 @@ export default [
   route(pagePaths.public.signin.path, pagePaths.public.signin.file),
   route(pagePaths.public.ssoSlack.path, pagePaths.public.ssoSlack.file),
 
-  layout('', [
+  layout('./routes/authorized/layouts/layout.tsx', [
     route(pagePaths.authorized.tickets.path, pagePaths.authorized.tickets.file),
   ]),
 ] satisfies RouteConfig
