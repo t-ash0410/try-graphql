@@ -52,7 +52,7 @@ describe('Mutation.createTicket', async () => {
     `)
   })
 
-  it('returns 400 when title is empty', async () => {
+  it('returns an error when title is empty', async () => {
     const res = await app.fetch(
       new Request('https://localhost/graphql', {
         method: 'POST',
@@ -94,6 +94,58 @@ describe('Mutation.createTicket', async () => {
               },
             ],
             "message": "Title cannot be empty",
+            "path": [
+              "createTicket",
+            ],
+          },
+        ],
+      }
+    `)
+  })
+
+  it('returns an error when deadline is not datetime', async () => {
+    const res = await app.fetch(
+      new Request('https://localhost/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `${JWT_KEY}=${jwt}`,
+        },
+        body: JSON.stringify({
+          query: `
+            mutation {
+              createTicket(
+                title: "test",
+                deadline: "invalid"
+              ) {
+                ticketId
+                title
+                description
+                deadline
+              }
+            }
+          `,
+        }),
+      }),
+    )
+
+    expect(res.status).toBe(200)
+    expect(await res.json()).toMatchInlineSnapshot(`
+      {
+        "data": null,
+        "errors": [
+          {
+            "extensions": {
+              "code": "INVALID_DEADLINE",
+              "statusCode": 400,
+            },
+            "locations": [
+              {
+                "column": 15,
+                "line": 3,
+              },
+            ],
+            "message": "Invalid deadline",
             "path": [
               "createTicket",
             ],
