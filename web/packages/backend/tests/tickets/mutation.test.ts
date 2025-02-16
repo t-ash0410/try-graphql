@@ -22,8 +22,8 @@ describe('Mutation.createTicket', async () => {
           query: `
             mutation {
               createTicket(
-                title: "New Ticket", 
-                description: "This is a new ticket", 
+                title: "New Ticket",
+                description: "This is a new ticket",
                 deadline: "2025-02-14T00:00:00+09:00"
               ) {
                 ticketId
