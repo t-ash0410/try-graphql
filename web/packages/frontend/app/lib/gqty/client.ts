@@ -26,6 +26,7 @@ const queryFetcher: QueryFetcher = async (
       operationName,
     }),
     mode: 'cors',
+    credentials: 'include',
     ...fetchOptions,
   })
 
