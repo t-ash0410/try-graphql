@@ -1,12 +1,6 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Button, TableSkeleton } from '~/components'
-import {
-  useCreateTicket,
-  useDeleteTicket,
-  useListTickets,
-  useUpdateTicket,
-} from '~/hooks/api/ticket'
+import { useMutation, useQuery } from '~/lib/gqty'
 import { formatDate } from '~/util/date'
 import { handleError } from '~/util/handle-error'
 import { DeleteButton } from '../delete-button'
@@ -14,59 +8,35 @@ import { EditableDateTimeField, EditableTextField } from '../editable-field'
 import { TicketForm } from '../ticket-form'
 
 export const TicketList = () => {
-  const queryClient = useQueryClient()
-  const { data, isLoading, error } = useListTickets()
+  const { tickets, $state } = useQuery()
+  const data = tickets()
 
   // Create
-  const createMutation = useCreateTicket(queryClient)
   const [isCreating, setIsCreating] = useState(false)
-  const handleCreateTicket = (newTicket: {
-    title: string
-    description: string
-    deadline: Date
-  }) => {
-    createMutation.mutate({
-      ...newTicket,
-      deadline: newTicket.deadline.toString(),
-    })
+  const [createTicket] = useMutation((mutation, inputs) => {
+    mutation.createTicket(inputs)
     setIsCreating(false)
-  }
+  })
 
   // Update
-  const updateMutation = useUpdateTicket(queryClient)
-  const handleEditTitle = (id: string, value: string) => {
-    updateMutation.mutate({
-      ticketId: id,
-      body: {
-        title: value,
-      },
-    })
-  }
-  const handleEditDescription = (id: string, value: string) => {
-    updateMutation.mutate({
-      ticketId: id,
-      body: {
-        description: value,
-      },
-    })
-  }
-  const handleEditDeadline = (id: string, value: Date) => {
-    updateMutation.mutate({
-      ticketId: id,
-      body: {
-        deadline: value.toString(),
-      },
-    })
-  }
+  // const updateMutation = useUpdateTicket(queryClient)
+  // const handleEditTitle = (id: string, value: string) => {
+  //   updateMutation.mutate({
+  //     ticketId: id,
+  //     body: {
+  //       title: value,
+  //     },
+  //   })
+  // }
 
   // Delete
-  const deleteMutation = useDeleteTicket(queryClient)
-  const handleDeleteTicket = (id: string) => {
-    deleteMutation.mutate(id)
-  }
+  // const deleteMutation = useDeleteTicket(queryClient)
+  // const handleDeleteTicket = (id: string) => {
+  //   deleteMutation.mutate(id)
+  // }
 
-  if (error) {
-    handleError(error)
+  if ($state.error) {
+    handleError($state.error)
     return
   }
   return (
@@ -74,7 +44,7 @@ export const TicketList = () => {
       <div className="mb-4">
         {isCreating ? (
           <TicketForm
-            onSubmit={handleCreateTicket}
+            onSubmit={() => createTicket()}
             onCancel={() => setIsCreating(false)}
           />
         ) : (
@@ -83,26 +53,21 @@ export const TicketList = () => {
           </Button>
         )}
       </div>
-      {isLoading ? <TableSkeleton /> : <></>}
-      {data?.tickets.map((ticket) => (
+      {!data ? <TableSkeleton /> : <></>}
+      {data.map((ticket) => (
         <div key={ticket.ticketId} className="bg-white p-4 rounded-lg shadow">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold w-full">
-              <EditableTextField
-                value={ticket.title}
-                onSave={(value) => handleEditTitle(ticket.ticketId, value)}
-              />
+              <EditableTextField value={ticket.title} onSave={console.log} />
             </h3>
             <div className="flex space-x-2">
-              <DeleteButton
-                onDelete={() => handleDeleteTicket(ticket.ticketId)}
-              />
+              <DeleteButton onDelete={console.log} />
             </div>
           </div>
           <div className="mb-2">
             <EditableTextField
-              value={ticket.description}
-              onSave={(value) => handleEditDescription(ticket.ticketId, value)}
+              value={ticket.description ?? ''}
+              onSave={console.log}
               inputType="textarea"
             />
           </div>
@@ -110,7 +75,7 @@ export const TicketList = () => {
             期限:&nbsp;
             <EditableDateTimeField
               value={ticket.deadline ? new Date(ticket.deadline) : undefined}
-              onSave={(value) => handleEditDeadline(ticket.ticketId, value)}
+              onSave={console.log}
             />
           </p>
           <p
