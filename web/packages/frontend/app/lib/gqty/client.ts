@@ -1,7 +1,4 @@
-/**
- * GQty: You can safely modify this file based on your needs.
- */
-
+import { createReactClient } from '@gqty/react'
 import {
   Cache,
   type QueryFetcher,
@@ -59,5 +56,24 @@ export const client = createClient<GeneratedSchema>({
 
 // Core functions
 export const { resolve, subscribe, schema } = client
+
+export const {
+  graphql,
+  useQuery,
+  usePaginatedQuery,
+  useTransactionQuery,
+  useLazyQuery,
+  useRefetch,
+  useMutation,
+  useMetaState,
+  prepareReactRender,
+  useHydrateCache,
+  prepareQuery,
+} = createReactClient<GeneratedSchema>(client, {
+  defaults: {
+    // Enable Suspense, you can override this option for each hook.
+    suspense: true,
+  },
+})
 
 export * from './schema.generated'
