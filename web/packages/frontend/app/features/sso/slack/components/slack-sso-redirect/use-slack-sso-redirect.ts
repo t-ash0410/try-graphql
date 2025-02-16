@@ -21,12 +21,12 @@ export function useSlackSSORedirect() {
     if (isLoading || !data) return
     if (isError) {
       handleError(new Error('サインインに失敗しました'))
-      nav(pagePaths.root.path)
+      nav(pagePaths.public.root.path)
       return
     }
     if (data.slackTeamId) {
       localStorage.setItem(localStorageKeys.SLACK_TEAM_ID, data.slackTeamId)
     }
-    nav(pagePaths.tickets.path)
+    nav(pagePaths.authorized.tickets.path)
   }, [nav, data, isLoading, isError])
 }

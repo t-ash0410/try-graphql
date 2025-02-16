@@ -1,8 +1,18 @@
-import { type RouteConfig, index, route } from '@react-router/dev/routes'
+import {
+  type RouteConfig,
+  index,
+  layout,
+  route,
+} from '@react-router/dev/routes'
 import { pagePaths } from './consts'
 
 export default [
-  index(pagePaths.root.file),
-  route(pagePaths.signin.path, pagePaths.signin.file),
-  route(pagePaths.ssoSlack.path, pagePaths.ssoSlack.file),
+  index(pagePaths.public.root.file),
+
+  route(pagePaths.public.signin.path, pagePaths.public.signin.file),
+  route(pagePaths.public.ssoSlack.path, pagePaths.public.ssoSlack.file),
+
+  layout('', [
+    route(pagePaths.authorized.tickets.path, pagePaths.authorized.tickets.file),
+  ]),
 ] satisfies RouteConfig
