@@ -1,15 +1,34 @@
 import { useState } from 'react'
 import { Button, TableSkeleton } from '~/components'
 import { useMutation, useQuery } from '~/lib/gqty'
-import type { Mutation } from '~/lib/gqty'
+import type { CreateTicket, Mutation, Tickets } from '~/lib/gqty'
 import { formatDate } from '~/util/date'
 import { handleError } from '~/util/handle-error'
 import { DeleteButton } from '../delete-button'
 import { EditableDateTimeField, EditableTextField } from '../editable-field'
 import { TicketForm } from '../ticket-form'
 
+const prepareTickets = (tickets: Tickets[]) => {
+  tickets.map(
+    ({ ticketId, title, description, deadline, createdAt, updatedAt }) => {},
+  )
+}
+
+const prepareCreateTicket = ({
+  ticketId,
+  title,
+  description,
+  deadline,
+  createdAt,
+  updatedAt,
+}: CreateTicket) => {}
+
 export const TicketList = () => {
-  const { tickets, $state } = useQuery()
+  const { tickets, $state, $refetch } = useQuery({
+    prepare({ query: { tickets } }) {
+      prepareTickets(tickets())
+    },
+  })
   const data = tickets()
 
   // Create
@@ -17,38 +36,47 @@ export const TicketList = () => {
   const [createTicket] = useMutation<
     void,
     Parameters<Mutation['createTicket']>[0]
-  >((mutation, inputs) => {
-    const ticket = mutation.createTicket(inputs)
+  >(async (mutation, inputs) => {
+    const res = await mutation.createTicket(inputs)
+    prepareCreateTicket(res)
     setIsCreating(false)
-    ticket.ticketId
+    await $refetch()
   })
 
   // Update
   const [updateTitle] = useMutation<
     void,
     Parameters<Mutation['updateTicketTitle']>[0]
-  >((mutation, inputs) => {
-    mutation.updateTicketTitle(inputs)
+  >(async (mutation, inputs) => {
+    await mutation.updateTicketTitle(inputs)
+    inputs
+    await $refetch()
   })
   const [updateDescription] = useMutation<
     void,
     Parameters<Mutation['updateTicketDescription']>[0]
-  >((mutation, inputs) => {
-    mutation.updateTicketDescription(inputs)
+  >(async (mutation, inputs) => {
+    await mutation.updateTicketDescription(inputs)
+    inputs
+    await $refetch()
   })
   const [updateDeadline] = useMutation<
     void,
     Parameters<Mutation['updateTicketDeadline']>[0]
-  >((mutation, inputs) => {
-    mutation.updateTicketDeadline(inputs)
+  >(async (mutation, inputs) => {
+    await mutation.updateTicketDeadline(inputs)
+    inputs
+    await $refetch()
   })
 
   // Delete
   const [deleteTicket] = useMutation<
     void,
     Parameters<Mutation['deleteTicket']>[0]
-  >((mutation, inputs) => {
-    mutation.deleteTicket(inputs)
+  >(async (mutation, inputs) => {
+    await mutation.deleteTicket(inputs)
+    inputs
+    await $refetch()
   })
 
   if ($state.error) {
@@ -60,11 +88,11 @@ export const TicketList = () => {
       <div className="mb-4">
         {isCreating ? (
           <TicketForm
-            onSubmit={(t) =>
-              createTicket({
+            onSubmit={async (t) => {
+              await createTicket({
                 args: t,
               })
-            }
+            }}
             onCancel={() => setIsCreating(false)}
           />
         ) : (
@@ -73,7 +101,7 @@ export const TicketList = () => {
           </Button>
         )}
       </div>
-      {!data ? <TableSkeleton /> : <></>}
+      {$state.isLoading ? <TableSkeleton /> : <></>}
       {data.map((ticket) => (
         <div
           key={`ticket-${ticket.ticketId}`}
@@ -83,35 +111,39 @@ export const TicketList = () => {
             <h3 className="text-lg font-semibold w-full">
               <EditableTextField
                 value={ticket.title}
-                onSave={(title) =>
-                  updateTitle({
+                onSave={async (title) => {
+                  const ticketId = ticket.ticketId
+                  await updateTitle({
                     args: {
-                      ticketId: ticket.ticketId,
+                      ticketId,
                       title,
                     },
                   })
-                }
+                  ticket.title = title
+                }}
               />
             </h3>
             <div className="flex space-x-2">
               <DeleteButton
-                onDelete={() =>
-                  deleteTicket({ args: { ticketId: ticket.ticketId } })
-                }
+                onDelete={async () => {
+                  const ticketId = ticket.ticketId
+                  await deleteTicket({ args: { ticketId } })
+                }}
               />
             </div>
           </div>
           <div className="mb-2">
             <EditableTextField
               value={ticket.description ?? ''}
-              onSave={(description) =>
-                updateDescription({
+              onSave={async (description) => {
+                const ticketId = ticket.ticketId
+                await updateDescription({
                   args: {
-                    ticketId: ticket.ticketId,
+                    ticketId,
                     description,
                   },
                 })
-              }
+              }}
               inputType="textarea"
             />
           </div>
@@ -119,23 +151,21 @@ export const TicketList = () => {
             期限:&nbsp;
             <EditableDateTimeField
               value={ticket.deadline ? new Date(ticket.deadline) : undefined}
-              onSave={(deadline) =>
-                updateDeadline({
+              onSave={async (deadline) => {
+                const ticketId = ticket.ticketId
+                await updateDeadline({
                   args: {
-                    ticketId: ticket.ticketId,
+                    ticketId,
                     deadline: deadline.toISOString(),
                   },
                 })
-              }
+              }}
             />
           </p>
-          <p
-            className="pt-1 text-xs text-gray-400"
-            suppressHydrationWarning={true}
-          >
+          <p className="pt-1 text-xs text-gray-400">
             作成日時:&nbsp;{formatDate(new Date(ticket.createdAt))}
           </p>
-          <p className="text-xs text-gray-400" suppressHydrationWarning={true}>
+          <p className="text-xs text-gray-400">
             更新日時:&nbsp;{formatDate(new Date(ticket.updatedAt))}
           </p>
         </div>
