@@ -14,9 +14,9 @@ export function useRootRedirect() {
       return
     }
     if (data.status === 401) {
-      nav(pagePaths.signin.path)
+      nav(pagePaths.public.signin.path)
       return
     }
-    nav(pagePaths.tickets.path)
+    nav(pagePaths.authorized.tickets.path)
   }, [nav, data, isLoading, isError])
 }

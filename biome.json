@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", "dist", ".pylon", ".react-router", "build"]
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".pylon",
+      ".react-router",
+      "build",
+      "schema.generated.ts"
+    ]
   },
   "formatter": {
     "enabled": true,

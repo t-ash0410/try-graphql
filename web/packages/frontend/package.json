@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "gqty:generate": "bunx @gqty/cli --react --typescript --no-install --target app/lib/gqty/client.ts ../backend/.pylon/schema.graphql",
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
@@ -11,15 +12,20 @@
     "check:write": "biome check --write"
   },
   "dependencies": {
+    "@gqty/react": "^3.1.0",
+    "@radix-ui/react-alert-dialog": "^1.1.6",
+    "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-slot": "^1.1.2",
     "@react-router/node": "^7.1.5",
     "@react-router/serve": "^7.1.5",
     "@tanstack/react-query": "^5.66.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "isbot": "^5.1.17",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
+    "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
     "react-router": "^7.1.5",
     "sonner": "^1.7.4",

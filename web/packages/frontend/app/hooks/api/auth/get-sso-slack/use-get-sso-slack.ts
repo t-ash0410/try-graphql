@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getHC } from '~/lib'
+import { getHC } from '~/lib/hono'
 import { handleError } from '~/util/handle-error'
 import { authQueryKeys } from '../query-key-factory'
 import type { GetSSOSlackQueryParams } from './types'

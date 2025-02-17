@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getHC } from '~/lib'
+import { getHC } from '~/lib/hono'
 import { handleError } from '~/util/handle-error'
 import { sessionQueryKeys } from '../query-key-factory'
 

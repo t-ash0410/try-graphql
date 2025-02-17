@@ -1,4 +1,11 @@
-import { createTicket, tickets } from '@backend/graphql'
+import {
+  createTicket,
+  deleteTicket,
+  tickets,
+  updateTicketDeadline,
+  updateTicketDescription,
+  updateTicketTitle,
+} from '@backend/graphql'
 import {
   BFF_PORT,
   CORS_ORIGIN,
@@ -33,6 +40,10 @@ const graphql = {
   },
   Mutation: {
     createTicket,
+    updateTicketTitle,
+    updateTicketDescription,
+    updateTicketDeadline,
+    deleteTicket,
   },
 }
 

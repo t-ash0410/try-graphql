@@ -1,0 +1,14 @@
+use flake
+
+# Common application settings
+export USE_HTTPS="true"
+export TLS_CERT_PATH="../../tls/localhost+2.pem"
+export TLS_KEY_PATH="../../tls/localhost+2-key.pem"
+
+# Backend application settings
+export SLACK_CLIENT_ID=""
+export DOMAIN="localhost"
+export SLACK_CLIENT_SECRET=""
+
+# Frontend application settings
+export VITE_SLACK_CLIENT_ID=""
