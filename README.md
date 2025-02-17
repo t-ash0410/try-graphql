@@ -6,3 +6,6 @@
 - pylon
 - prisma
 - postgres
+- vite
+- react router
+- gqty
